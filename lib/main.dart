@@ -5,7 +5,7 @@ import 'database/db_helper.dart';
 import 'form_kontak.dart';
 import 'list_kontak.dart';
 import 'model/kontak.dart';
-
+//baris kode program tambahan
 void main() {
   runApp(MyApp());
 }

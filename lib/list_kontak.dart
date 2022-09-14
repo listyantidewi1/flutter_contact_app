@@ -176,6 +176,7 @@ class _ListKontakPageState extends State<ListKontakPage> {
       await _getAllKontak();
     }
   }
+  //kode program tambahan
 
   //membuka halaman edit Kontak
   Future<void> _openFormEdit(Kontak kontak) async {
@@ -186,3 +187,4 @@ class _ListKontakPageState extends State<ListKontakPage> {
     }
   }
 }
+//tambahan kode program
