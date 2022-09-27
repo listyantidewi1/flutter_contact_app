@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'database/db_helper.dart';
 import 'model/kontak.dart';
 
-
 class FormKontak extends StatefulWidget {
   final Kontak? kontak;
 
@@ -36,7 +35,7 @@ class _FormKontakState extends State<FormKontak> {
 
     company = TextEditingController(
         text: widget.kontak == null ? '' : widget.kontak!.company);
-        
+
     super.initState();
   }
 
@@ -44,7 +43,7 @@ class _FormKontakState extends State<FormKontak> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Form Kontak'),
+        title: Text('Aplikasi Kontak'),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
@@ -56,7 +55,7 @@ class _FormKontakState extends State<FormKontak> {
             child: TextField(
               controller: name,
               decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'Nama',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   )),
@@ -69,7 +68,7 @@ class _FormKontakState extends State<FormKontak> {
             child: TextField(
               controller: mobileNo,
               decoration: InputDecoration(
-                  labelText: 'Mobile No',
+                  labelText: 'No HP/Telp',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   )),
@@ -95,28 +94,43 @@ class _FormKontakState extends State<FormKontak> {
             child: TextField(
               controller: company,
               decoration: InputDecoration(
-                  labelText: 'Company',
+                  labelText: 'Alamat',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   )),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              top: 20
-            ),
+            padding: const EdgeInsets.only(top: 20),
             child: ElevatedButton(
               child: (widget.kontak == null)
                   ? Text(
-                      'Add',
+                      'Tambah',
                       style: TextStyle(color: Colors.white),
                     )
                   : Text(
-                      'Update',
+                      'Ubah',
                       style: TextStyle(color: Colors.white),
                     ),
               onPressed: () {
-                upsertKontak();
+                if (name?.text == "" || mobileNo?.text == "") {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Nama & Nomor Telp tidak boleh kosong"),
+                          actions: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Ok")),
+                          ],
+                        );
+                      });
+                } else {
+                  upsertKontak();
+                }
               },
             ),
           )
@@ -127,16 +141,32 @@ class _FormKontakState extends State<FormKontak> {
 
   Future<void> upsertKontak() async {
     if (widget.kontak != null) {
-      //update
-      await db.updateKontak(Kontak(
-        id: widget.kontak!.id, 
-        name: name!.text, 
-        mobileNo: mobileNo!.text, 
-        email: email!.text, 
-        company: company!.text
-      ));
+      if (name?.text == "" || mobileNo?.text == "") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Nama & Nomor Telp tidak boleh kosong"),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Ok")),
+                ],
+              );
+            });
+      } else {
+        //update
+        await db.updateKontak(Kontak(
+            id: widget.kontak!.id,
+            name: name!.text,
+            mobileNo: mobileNo!.text,
+            email: email!.text,
+            company: company!.text));
 
-      Navigator.pop(context, 'update');
+        Navigator.pop(context, 'update');
+      }
     } else {
       //insert
       await db.saveKontak(Kontak(
